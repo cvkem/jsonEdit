@@ -4,17 +4,11 @@
   (:use [clojure.java [io :only [reader]]])
   (:require (clojure [zip :as zip]))
   (:use [vinzi.jsonZip :only [jsonZipper nodeChildrenHtml nodeContentsHtml jsonPathStr]])
-;;  (:require [clojure.contrib.json :as json])
-;;  (:use [com.georgejahad.difform])
-;;  (:require [clojure.contrib.duck-streams :as ds :only [reader]])
   (:import (java.awt Color Dimension)
 	   (java.awt.event ActionListener)
 	   (javax.swing JFrame JButton JPanel JLabel JOptionPane BorderFactory)
 	   (java.awt GridBagLayout Insets)))
 
-;(import 'javax.swing.JFrame)
-;(import 'javax.swing.JPanel)
-;(import 'javax.swing.JButton)
 
 (defn inspect-ns [prefix]
   (filter #(.startsWith (.toString (second %)) (str "class " prefix)) (ns-imports *ns*)))
@@ -62,7 +56,7 @@
 
 
 (defn jsonViewer
-  "The argument should be a Json-object. Internally it will be transformed to a zipper"
+  "The argument should be a in-memory Json-object. Internally it will be transformed to a zipper."
   [json]
   (let [loc    (atom (jsonZipper json))
 	down   (JButton. "Down")
@@ -143,12 +137,15 @@
     ))
 
 
-(defn jsonFileViewer [name]
+(defn jsonFileViewer
+  "Opens the file 'name' and shows the json-contents in the viewer."
+  [name]
   (with-open [r  (reader name)]
     (let [json (json/read-json r)]
       (jsonViewer json))))
 
 
+(comment
 ;;  temporary for testing purposes
 
 (def testTree {:level_0	{:level_0_1  "de titel"
@@ -202,24 +199,5 @@
 		  (say-hello))
        (println "created button")))
 
-
-;; ;(import 'javax.swing.JFrame)
-;; (def frame (JFrame. "Hello Frame"))
-;; (.setSize frame 200 200)
-;; (.setVisible frame true)
-
-;; ;(import 'javax.swing.JPanel)
-;; (def panel (JPanel.))
-;; (.setContentPane frame panel)
-
-
-;; ;(import 'javax.swing.JButton)
-;; (def button (JButton. "Click Me!"))
-;; (.add panel button)
-
-;; (.revalidate button)
-
-;;(defn -main [& args]
-;;  (println "hello world!"))
-
+)
 

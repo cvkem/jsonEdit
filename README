@@ -1,13 +1,20 @@
-# relCde
+#  vinzi.jsonViewer
 
-FIXME: write description
 
-## Usage
+A small swing application to view json-objects and json-files in a viewer. 
 
-FIXME: write
+(defn jsonViewer [json] ...)
+The argument should be an in-memory Json-object. Internally it will be transformed to a jsonZipper.
 
-## License
+(defn jsonFileViewer [name]  ...)
+Opens the file 'name' and shows the json-contents in the viewer.
 
-Copyright (C) 2010 FIXME
+TO DO:  add buttons to modify the file (or object) and to store it again.
+
+NOTE: When using the jsonZip libray a json object is represented by splitting each map in a set of basic elements, while all compound elements (maps and vectors) are stored in a vector with key :jsonChildren. Vectors are stored as a map with only one key { :jsonChildren  [...] }
+The (original) keys and path-strings are stored in the metadata as :json/key  and :json/path. Internally the next two routines are used to transform between these two representations.
+
+
+Copyright (C) 2010 Vinzi
 
 Distributed under the Eclipse Public License, the same as Clojure.
