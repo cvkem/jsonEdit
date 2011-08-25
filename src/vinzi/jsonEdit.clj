@@ -1,4 +1,4 @@
-(ns vinzi.jsonViewer
+(ns vinzi.jsonEdit
   (:require [clojure.contrib [pprint :as pprint]])
   (:require [clojure.contrib [json :as json]])
   (:use [clojure.java [io :only [reader]]])
