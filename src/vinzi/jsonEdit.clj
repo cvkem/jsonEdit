@@ -3,7 +3,7 @@
   (:require [clojure.contrib [json :as json]])
   (:use [clojure.java [io :only [reader]]])
   (:require (clojure [zip :as zip]))
-  (:use [vinzi.jsonZip :only [jsonZipper nodeChildrenHtml nodeContentsHtml jsonPathStr]])
+  (:use [vinzi.jsonZip :only [jsonZipper nodeChildrenHtml nodeContentsHtml jsonPathStr isZipper? isJson?]])
   (:import (java.awt Color Dimension)
 	   (java.awt.event ActionListener)
 	   (javax.swing JFrame JButton JPanel JLabel JOptionPane BorderFactory)
@@ -13,6 +13,7 @@
 (defn inspect-ns [prefix]
   (filter #(.startsWith (.toString (second %)) (str "class " prefix)) (ns-imports *ns*)))
 
+;;;;;;;;;;;;;;;
 ;; Macro's by Stuart Sierra
 
 (defmacro on-action [component event & body]
@@ -44,6 +45,8 @@
                  (recur (cons `(.add ~cntr ~expr ~c)
                               result)
                         (next body)))))))))
+;;;;;;   end macro's by Stuart Sierra
+
 
 (def jsonWidth 400)
 
@@ -55,10 +58,11 @@
 
 
 
-(defn jsonViewer
+(defn jsonZipViewer
   "The argument should be a in-memory Json-object. Internally it will be transformed to a zipper."
-  [json]
-  (let [loc    (atom (jsonZipper json))
+  [jsonZip]
+  {:pre [(isZipper? jsonZip) (not (nil? jsonZip))]}
+  (let [loc    (atom jsonZip)
 	down   (JButton. "Down")
 	root   (JButton. "root")
 	up     (JButton. "Up")
@@ -136,6 +140,12 @@
      }
     ))
 
+
+(defn jsonViewer
+  "The argument should be a in-memory Json-object. Internally it will be transformed to a zipper."
+  [json]
+  {:pre [(not (nil? json))  (not (isJson? json))]}  ;; not in string representation  
+    (jsonZipViewer (jsonZipper json)))
 
 (defn jsonFileViewer
   "Opens the file 'name' and shows the json-contents in the viewer."
