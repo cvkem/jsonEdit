@@ -3,7 +3,7 @@
   (:require [clojure.contrib [json :as json]])
   (:use [clojure.java [io :only [reader]]])
   (:require (clojure [zip :as zip]))
-  (:use [vinzi.jsonZip :only [jsonZipper nodeChildrenHtml nodeContentsHtml jsonPathStr isZipper? isJson?]])
+  (:use [vinzi.jsonZip :only [jsonZipper nodeChildrenHtml nodeContentsHtml jsonPathStr isZipper? isJson? jsonStatus jsonKey]])
   (:import (java.awt Color Dimension)
 	   (java.awt.event ActionListener)
 	   (javax.swing JFrame JButton JPanel JLabel JOptionPane BorderFactory)
@@ -56,13 +56,36 @@
     nil   message   "Info"
     JOptionPane/INFORMATION_MESSAGE))
 
+(defn traverseStat
+  "Traverse the 'zipper' zip until you find an element with a status. Using 'step' to go to the next element"
+  [zipZap step]
+  (if-let [init (step zipZap)]
+    (loop [zipper init]
+      (println "current node has key " (jsonKey zipper) " and status: " (jsonStatus zipper))
+      (if-let [stat (jsonStatus zipper)]
+	zipper  ;; node has a status-flag, so return it
+	(if-let [nxt (step zipper)]
+	  (if (zip/end? nxt)
+	    zipper
+	    (recur nxt))
+	  zipper)))
+    zipZap))
 
+(defn nextStat
+  "Find next element with a status-flag (skipping current element)"
+  [zip]
+  (traverseStat zip zip/next))
+
+(defn prevStat
+  "Find previous element with a status-flag (skipping current element)"
+  [zip]
+  (traverseStat zip zip/prev))
 
 (defn jsonZipViewer
   "The argument should be a in-memory Json-object. Internally it will be transformed to a zipper."
   [jsonZip]
   {:pre [(isZipper? jsonZip) (not (nil? jsonZip))]}
-  (let [loc    (atom jsonZip)
+  (let [loc    (atom (nextStat jsonZip))
 	down   (JButton. "Down")
 	root   (JButton. "root")
 	up     (JButton. "Up")
