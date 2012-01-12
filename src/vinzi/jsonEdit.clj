@@ -1,6 +1,6 @@
 (ns vinzi.jsonEdit
-  (:require [clojure.contrib [pprint :as pprint]])
-  (:require [clojure.contrib [json :as json]])
+  (:require [clojure [pprint :as pprint]])
+  (:require [clojure.data [json :as json]])
   (:use [clojure.java [io :only [reader]]])
   (:require (clojure [zip :as zip]))
   (:use [vinzi.jsonZip :only [jsonZipper nodeChildrenHtml nodeContentsHtml jsonPathStr isZipper? isJson? jsonStatus jsonKey]])
