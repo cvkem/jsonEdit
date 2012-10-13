@@ -15,6 +15,10 @@
 
 ;;;;;;;;;;;;;;;
 ;; Macro's by Stuart Sierra
+;;  Sources:
+;;    http://stuartsierra.com/2010/01/05/taming-the-gridbaglayout
+;;    http://stuartsierra.com/2010/01/06/heating-up-clojure-swing
+;;
 
 (defmacro on-action [component event & body]
   `(. ~component addActionListener
